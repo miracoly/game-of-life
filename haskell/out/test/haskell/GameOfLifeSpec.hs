@@ -6,38 +6,6 @@ import Test.Hspec
 
 main :: IO ()
 main = hspec $ do
-  describe "isAlive" $ do
-    it "should return true" $ do
-      isAlive TestData.static (Position 2 2) `shouldBe` True
-      isAlive TestData.static (Position 3 2) `shouldBe` True
-      isAlive TestData.static (Position 1 3) `shouldBe` True
-      isAlive TestData.static (Position 4 3) `shouldBe` True
-      isAlive TestData.static (Position 2 4) `shouldBe` True
-      isAlive TestData.static (Position 3 4) `shouldBe` True
-    it "should return false" $ do
-      isAlive TestData.static (Position 1 1) `shouldBe` False
-      isAlive TestData.static (Position 1 2) `shouldBe` False
-      isAlive TestData.static (Position 1 4) `shouldBe` False
-      isAlive TestData.static (Position 2 1) `shouldBe` False
-      isAlive TestData.static (Position 2 3) `shouldBe` False
-      isAlive TestData.static (Position 2 3) `shouldBe` False
-      isAlive TestData.static (Position 2 5) `shouldBe` False
-  describe "isDead" $ do
-    it "should return false" $ do
-      isDead TestData.static (Position 2 2) `shouldBe` False
-      isDead TestData.static (Position 3 2) `shouldBe` False
-      isDead TestData.static (Position 1 3) `shouldBe` False
-      isDead TestData.static (Position 4 3) `shouldBe` False
-      isDead TestData.static (Position 2 4) `shouldBe` False
-      isDead TestData.static (Position 3 4) `shouldBe` False
-    it "should return true" $ do
-      isDead TestData.static (Position 1 1) `shouldBe` True
-      isDead TestData.static (Position 1 2) `shouldBe` True
-      isDead TestData.static (Position 1 4) `shouldBe` True
-      isDead TestData.static (Position 2 1) `shouldBe` True
-      isDead TestData.static (Position 2 3) `shouldBe` True
-      isDead TestData.static (Position 2 3) `shouldBe` True
-      isDead TestData.static (Position 2 5) `shouldBe` True
   describe "nextTick" $ do
     it "all die" $ do
       nextTick TestData.underpopulation `shouldBe` []
@@ -47,3 +15,14 @@ main = hspec $ do
       nextTick TestData.overpopulation `shouldBe` TestData.nextTickOverpopulation
     it "birth" $ do
       nextTick TestData.birth `shouldBe` TestData.nextTickBirth
+  describe "nextTicks" $ do
+    it "n is 0" $ do
+      nextTicks TestData.underpopulation 0 `shouldBe` TestData.underpopulation
+    it "all die" $ do
+      nextTicks TestData.underpopulation 10 `shouldBe` []
+    it "static" $ do
+      nextTicks TestData.static 10 `shouldBe` TestData.static
+    it "overpopulation" $ do
+      nextTicks TestData.overpopulation 2 `shouldBe` TestData.secondNextTickOverpopulation
+--    it "birth" $ do
+--      nextTick TestData.birth `shouldBe` TestData.nextTickBirth

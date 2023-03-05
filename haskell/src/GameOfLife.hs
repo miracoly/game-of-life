@@ -1,6 +1,6 @@
 module GameOfLife (module GameOfLife) where
 
-import Data.List (nub)
+import Data.List (nub, sort)
 
 type Board = [Position]
 
@@ -8,10 +8,16 @@ data Position = Position
   { x :: Int,
     y :: Int
   }
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
+  
+nextTicks :: Board -> Int -> Board
+nextTicks b n 
+  | n < 1 = b 
+  | n == 1 = nextTick b
+  | otherwise = nextTicks (nextTick b) (n -1)
 
 nextTick :: Board -> Board
-nextTick b = getSurvivors b ++ getBirths b
+nextTick b = sort $ getSurvivors b ++ getBirths b
 
 getSurvivors :: Board -> [Position]
 getSurvivors b = filter (doesSurvive b) b
