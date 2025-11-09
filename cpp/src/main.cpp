@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
-#include <iostream>
 #include <limits>
 #include <optional>
 #include <thread>
@@ -36,10 +35,7 @@ std::optional<std::uint32_t> parseSeed(int argc, char* argv[]) {
 }  // namespace
 
 int main(int argc, char* argv[]) {
-  for (int i = 0; i < argc; ++i) {
-    std::cout << i << ": " << argv[0] << '\n';
-  }
-  gol::Game game{20, 10};
+  gol::Game game{40, 40};
 
   const auto seed = parseSeed(argc, argv);
   const std::uint32_t seed_used = game.Seed(seed);

@@ -11,6 +11,7 @@ add_executable(game_of_life src/main.cpp
         src/gol/Game.hpp
 )
 
+set(CURSED_NEED_WIDE TRUE)
 find_package(Curses REQUIRED)
 target_link_libraries(game_of_life
         PRIVATE ${CURSES_LIBRARIES}

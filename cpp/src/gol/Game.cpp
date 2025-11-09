@@ -2,13 +2,16 @@
 
 #include <ncurses.h>
 #include <random>
+#include <stdexcept>
 
 namespace gol {
 
 Game::Game(int width, int height)
     : width_(width),
       height_(height),
-      grid_(height, std::vector<bool>(width, false)) {}
+      grid_(height, std::vector<bool>(width, false)) {
+  if (height & 1) throw std::invalid_argument("Height must be even");
+}
 
 std::uint32_t Game::Seed(std::optional<std::uint32_t> seed) {
   const std::uint32_t actual_seed = seed.value_or(std::random_device{}());
@@ -35,16 +38,31 @@ void Game::Step() {
 }
 
 void Game::InitRender() {
+  setlocale(LC_ALL, "");
   initscr();
   cbreak();
   noecho();
 };
 
 void Game::Render() {
-  for (int y = 0; y < height_; ++y) {
+  for (int y = 0; y < height_; y += 2) {
     for (int x = 0; x < width_; ++x) {
-      const char cell = grid_[y][x] ? '*' : ' ';
-      mvaddch(y, x, cell);
+      const bool top = grid_[y][x];
+      const bool bottom = grid_[y + 1][x];
+      int _y = y / 2;
+
+      cchar_t cell;
+      if (top && bottom) {
+        cell = CELL_TOP_BOTTOM;
+      } else if (top) {
+        cell = CELL_TOP;
+      } else if (bottom) {
+        cell = CELL_BOTTOM;
+      } else {
+        cell = NO_CELL;
+      }
+
+      mvadd_wch(_y, x, &cell);
     }
   }
   refresh();

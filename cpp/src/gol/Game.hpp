@@ -1,3 +1,4 @@
+#include <ncurses.h>
 #include <array>
 #include <cstdint>
 #include <optional>
@@ -23,6 +24,11 @@ class Game {
   bool nextCellState(int x, int y);
   int countNeighbors(int x, int y);
   bool inBounds(int x, int y);
+
+  inline static constexpr cchar_t CELL_TOP = {.chars = L"\u2580"};
+  inline static constexpr cchar_t CELL_BOTTOM = {.chars = L"\u2584"};
+  inline static constexpr cchar_t CELL_TOP_BOTTOM = {.chars = L"\u2588"};
+  inline static constexpr cchar_t NO_CELL = {.chars = L" "};
 
   inline static constexpr std::array<std::pair<int, int>, 8> neighborOffsets{
       // clang-format off
