@@ -1,8 +1,10 @@
 #include "Game.hpp"
 
 #include <ncurses.h>
+#include <cmath>
 #include <random>
 #include <stdexcept>
+#include <string>
 
 namespace gol {
 
@@ -104,6 +106,11 @@ int Game::countNeighbors(int x, int y) {
 
 bool Game::inBounds(int x, int y) {
   return x > 0 && y > 0 && x < width_ && y < height_;
+}
+
+short Game::colorFromHex(const std::string& hex) {
+  return static_cast<short>(
+      std::round((std::stoi(hex, nullptr, 16) / 255.0) * 1000));
 }
 
 }  // namespace gol

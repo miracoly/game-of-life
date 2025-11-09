@@ -2,6 +2,7 @@
 #include <array>
 #include <cstdint>
 #include <optional>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -33,6 +34,7 @@ class Game {
   Cell nextCellState(int x, int y);
   int countNeighbors(int x, int y);
   bool inBounds(int x, int y);
+  short colorFromHex(const std::string& hex);
 
   inline static constexpr wchar_t CELL_TOP[] = L"\u2580";
   inline static constexpr wchar_t CELL_BOTTOM[] = L"\u2584";
