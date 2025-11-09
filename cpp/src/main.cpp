@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
   while (!gShutdownRequested) {
     game.Render();
-    // game.Step();
+    game.Step();
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 

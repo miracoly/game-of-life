@@ -24,6 +24,16 @@ std::uint32_t Game::Seed(std::optional<std::uint32_t> seed) {
   return actual_seed;
 }
 
+void Game::Step() {
+  std::vector<std::vector<bool>> newGrid(height_, std::vector<bool>(width_));
+  for (int y = 0; y < height_; ++y) {
+    for (int x = 0; x < width_; ++x) {
+      newGrid[y][x] = nextCellState(x, y);
+    }
+  }
+  grid_ = std::move(newGrid);
+}
+
 void Game::InitRender() {
   initscr();
   cbreak();
@@ -42,6 +52,30 @@ void Game::Render() {
 
 void Game::CleanupRender() {
   endwin();
+}
+
+bool Game::nextCellState(int x, int y) {
+  const int neighbors = countNeighbors(x, y);
+  if (grid_[y][x]) {
+    return neighbors == 2 || neighbors == 3;
+  } else {
+    return neighbors == 3;
+  }
+}
+
+int Game::countNeighbors(int x, int y) {
+  int count = 0;
+  for (auto neighbor : Game::neighborOffsets) {
+    int nx = x + neighbor.first;
+    int ny = y + neighbor.second;
+
+    if (inBounds(nx, ny) && grid_[ny][nx]) ++count;
+  }
+  return count;
+}
+
+bool Game::inBounds(int x, int y) {
+  return x > 0 && y > 0 && x < width_ && y < height_;
 }
 
 }  // namespace gol

@@ -1,5 +1,7 @@
+#include <array>
 #include <cstdint>
 #include <optional>
+#include <utility>
 #include <vector>
 
 namespace gol {
@@ -18,6 +20,16 @@ class Game {
   int width_;
   int height_;
   std::vector<std::vector<bool>> grid_;
-};
+  bool nextCellState(int x, int y);
+  int countNeighbors(int x, int y);
+  bool inBounds(int x, int y);
 
+  inline static constexpr std::array<std::pair<int, int>, 8> neighborOffsets{
+      // clang-format off
+      {{-1, -1}, {0, -1}, {1, -1},
+       {-1, 0},               {1, 0},
+       {-1, 1}, {0, 1}, {1, 1}}
+      // clang-format on
+  };
+};
 }  // namespace gol
