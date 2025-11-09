@@ -10,9 +10,9 @@ Game::Game(int width, int height)
       height_(height),
       grid_(height, std::vector<bool>(width, false)) {}
 
-void Game::Seed(std::optional<int> seed) {
-  int _seed = seed.value_or(std::rand());
-  std::mt19937 gen(_seed);
+std::uint32_t Game::Seed(std::optional<std::uint32_t> seed) {
+  const std::uint32_t actual_seed = seed.value_or(std::random_device{}());
+  std::mt19937 gen(actual_seed);
   std::bernoulli_distribution dist(0.5);
 
   for (int y = 0; y < height_; ++y) {
@@ -20,6 +20,8 @@ void Game::Seed(std::optional<int> seed) {
       grid_[y][x] = dist(gen);
     }
   }
+
+  return actual_seed;
 }
 
 void Game::InitRender() {

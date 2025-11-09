@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <optional>
 #include <vector>
 
@@ -9,7 +10,7 @@ class Game {
   static void CleanupRender();
 
   explicit Game(int width, int height);
-  void Seed(std::optional<int> seed = std::nullopt);
+  std::uint32_t Seed(std::optional<std::uint32_t> seed = std::nullopt);
   void Step();
   void Render();
 

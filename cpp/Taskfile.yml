@@ -5,7 +5,7 @@ tasks:
     deps: [build]
     dir: build
     cmds:
-      - ./game_of_life
+      - ./game_of_life {{.CLI_ARGS}}
     silent: true
   build:
     deps: [configure]

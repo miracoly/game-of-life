@@ -1,7 +1,12 @@
+#include <cerrno>
 #include <chrono>
 #include <csignal>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+#include <limits>
+#include <optional>
 #include <thread>
 
 #include "gol/Game.hpp"
@@ -14,11 +19,31 @@ void HandleSigint(int) {
   gShutdownRequested = 1;
 }
 
+std::optional<std::uint32_t> parseSeed(int argc, char* argv[]) {
+  if (argc < 2) return std::nullopt;
+
+  char* end = nullptr;
+  errno = 0;
+  unsigned long parsed = std::strtoul(argv[1], &end, 10);
+  if (errno != 0 || !end || *end != '\0' ||
+      parsed > std::numeric_limits<std::uint32_t>::max()) {
+    std::fprintf(stderr, "Invalid seed '%s'\n", argv[1]);
+    std::exit(EXIT_FAILURE);
+  }
+  return static_cast<std::uint32_t>(parsed);
+}
+
 }  // namespace
 
-int main() {
+int main(int argc, char* argv[]) {
+  for (int i = 0; i < argc; ++i) {
+    std::cout << i << ": " << argv[0] << '\n';
+  }
   gol::Game game{20, 10};
-  game.Seed();
+
+  const auto seed = parseSeed(argc, argv);
+  const std::uint32_t seed_used = game.Seed(seed);
+  std::printf("Seed: %u\n", seed_used);
 
   gol::Game::InitRender();
   std::signal(SIGINT, HandleSigint);
@@ -30,5 +55,5 @@ int main() {
   }
 
   gol::Game::CleanupRender();
-  return 0;
+  return EXIT_SUCCESS;
 }
