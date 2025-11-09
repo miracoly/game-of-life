@@ -7,8 +7,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(game_of_life src/main.cpp
-        # src/game/Game.cpp
-        # src/game/Game.hpp
+        src/gol/Game.cpp
+        src/gol/Game.hpp
 )
 
 find_package(Curses REQUIRED)
