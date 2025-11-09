@@ -11,6 +11,11 @@ namespace gol {
 #define COLOR_FG_1 COLOR_BLUE
 #define COLOR_BG COLOR_WHITE
 
+struct Cell {
+  bool isAlive;
+  int age = 0;
+};
+
 class Game {
  public:
   static void InitRender();
@@ -24,8 +29,8 @@ class Game {
  private:
   int width_;
   int height_;
-  std::vector<std::vector<bool>> grid_;
-  bool nextCellState(int x, int y);
+  std::vector<std::vector<Cell>> grid_;
+  Cell nextCellState(int x, int y);
   int countNeighbors(int x, int y);
   bool inBounds(int x, int y);
 

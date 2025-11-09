@@ -9,7 +9,7 @@ namespace gol {
 Game::Game(int width, int height)
     : width_(width),
       height_(height),
-      grid_(height, std::vector<bool>(width, false)) {
+      grid_(height, std::vector<Cell>(width, (Cell){.isAlive = false})) {
   if (height & 1) throw std::invalid_argument("Height must be even");
 }
 
@@ -20,7 +20,7 @@ std::uint32_t Game::Seed(std::optional<std::uint32_t> seed) {
 
   for (int y = 0; y < height_; ++y) {
     for (int x = 0; x < width_; ++x) {
-      grid_[y][x] = dist(gen);
+      grid_[y][x] = (Cell){.isAlive = dist(gen)};
     }
   }
 
@@ -28,7 +28,7 @@ std::uint32_t Game::Seed(std::optional<std::uint32_t> seed) {
 }
 
 void Game::Step() {
-  std::vector<std::vector<bool>> newGrid(height_, std::vector<bool>(width_));
+  std::vector<std::vector<Cell>> newGrid(height_, std::vector<Cell>(width_));
   for (int y = 0; y < height_; ++y) {
     for (int x = 0; x < width_; ++x) {
       newGrid[y][x] = nextCellState(x, y);
@@ -54,16 +54,16 @@ void Game::InitRender() {
 void Game::Render() {
   for (int y = 0; y < height_; y += 2) {
     for (int x = 0; x < width_; ++x) {
-      const bool top = grid_[y][x];
-      const bool bottom = grid_[y + 1][x];
+      const Cell top = grid_[y][x];
+      const Cell bottom = grid_[y + 1][x];
       int _y = y / 2;
 
       cchar_t cell;
-      if (top && bottom) {
+      if (top.isAlive && bottom.isAlive) {
         setcchar(&cell, CELL_TOP_BOTTOM, 0, 1, nullptr);
-      } else if (top) {
+      } else if (top.isAlive) {
         setcchar(&cell, CELL_TOP, 0, 1, nullptr);
-      } else if (bottom) {
+      } else if (bottom.isAlive) {
         setcchar(&cell, CELL_BOTTOM, 0, 1, nullptr);
       } else {
         setcchar(&cell, NO_CELL, 0, 1, nullptr);
@@ -79,12 +79,15 @@ void Game::CleanupRender() {
   endwin();
 }
 
-bool Game::nextCellState(int x, int y) {
+Cell Game::nextCellState(int x, int y) {
   const int neighbors = countNeighbors(x, y);
-  if (grid_[y][x]) {
-    return neighbors == 2 || neighbors == 3;
+  const Cell curr = grid_[y][x];
+  if (curr.isAlive) {
+    const bool alive = neighbors == 2 || neighbors == 3;
+    return (Cell){.isAlive = alive, .age = curr.age + 1};
   } else {
-    return neighbors == 3;
+    const bool alive = neighbors == 3;
+    return (Cell){.isAlive = alive};
   }
 }
 
@@ -94,7 +97,7 @@ int Game::countNeighbors(int x, int y) {
     int nx = x + neighbor.first;
     int ny = y + neighbor.second;
 
-    if (inBounds(nx, ny) && grid_[ny][nx]) ++count;
+    if (inBounds(nx, ny) && grid_[ny][nx].isAlive) ++count;
   }
   return count;
 }
