@@ -1,17 +1,7 @@
 #include "Game.hpp"
 
 #include <ncurses.h>
-#include <csignal>
 #include <random>
-
-namespace {
-
-void HandleSigint(int) {
-  gol::Game::CleanupRender();
-  std::_Exit(0);
-}
-
-}  // namespace
 
 namespace gol {
 
@@ -36,8 +26,6 @@ void Game::InitRender() {
   initscr();
   cbreak();
   noecho();
-
-  std::signal(SIGINT, HandleSigint);
 };
 
 void Game::Render() {
