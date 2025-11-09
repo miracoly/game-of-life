@@ -7,9 +7,9 @@
 
 namespace gol {
 
-#define COLOR_FG_0 COLOR_GREEN
+#define COLOR_FG_0 COLOR_MAGENTA
 #define COLOR_FG_1 COLOR_BLUE
-#define COLOR_BG COLOR_BLACK
+#define COLOR_BG COLOR_WHITE
 
 class Game {
  public:

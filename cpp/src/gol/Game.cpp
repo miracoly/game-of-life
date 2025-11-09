@@ -45,10 +45,10 @@ void Game::InitRender() {
   start_color();
   use_default_colors();
 
-  init_pair(1, COLOR_FG_0, COLOR_FG_0);
-  init_pair(2, COLOR_FG_0, COLOR_BG);
-  init_pair(3, COLOR_BG, COLOR_FG_0);
-  init_pair(4, COLOR_BG, COLOR_BG);
+  init_pair(1, COLOR_FG_0, 0);
+  init_pair(2, COLOR_FG_0, 0);
+  init_pair(3, 0, COLOR_FG_0);
+  init_pair(4, 0, 0);
 };
 
 void Game::Render() {
@@ -60,13 +60,13 @@ void Game::Render() {
 
       cchar_t cell;
       if (top && bottom) {
-        setcchar(&cell, CELL_TOP_BOTTOM, COLOR_PAIR(1), 0, nullptr);
+        setcchar(&cell, CELL_TOP_BOTTOM, 0, 1, nullptr);
       } else if (top) {
-        setcchar(&cell, CELL_TOP, COLOR_PAIR(1), 0, nullptr);
+        setcchar(&cell, CELL_TOP, 0, 1, nullptr);
       } else if (bottom) {
-        setcchar(&cell, CELL_BOTTOM, COLOR_PAIR(1), 0, nullptr);
+        setcchar(&cell, CELL_BOTTOM, 0, 1, nullptr);
       } else {
-        setcchar(&cell, NO_CELL, COLOR_PAIR(1), 0, nullptr);
+        setcchar(&cell, NO_CELL, 0, 1, nullptr);
       }
 
       mvadd_wch(_y, x, &cell);
