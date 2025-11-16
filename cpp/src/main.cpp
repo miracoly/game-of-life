@@ -35,7 +35,7 @@ std::optional<std::uint32_t> parseSeed(int argc, char* argv[]) {
 }  // namespace
 
 int main(int argc, char* argv[]) {
-  gol::Game game{40, 40};
+  gol::Game game{60, 60};
 
   const auto seed = parseSeed(argc, argv);
   const std::uint32_t seed_used = game.Seed(seed);

@@ -47,10 +47,13 @@ void Game::InitRender() {
   start_color();
   use_default_colors();
 
-  init_pair(1, COLOR_FG_0, 0);
-  init_pair(2, COLOR_FG_0, 0);
-  init_pair(3, 0, COLOR_FG_0);
-  init_pair(4, 0, 0);
+  initHexColor(COLOR_FG_0, "#b34b5b");
+  initHexColor(COLOR_FG_1, "#db9197");
+  initHexColor(COLOR_BG, "#3b161d");
+  init_pair(1, COLOR_FG_0, COLOR_BG);
+  init_pair(2, COLOR_FG_1, COLOR_BG);
+  init_pair(3, COLOR_FG_0, COLOR_FG_1);
+  init_pair(4, COLOR_FG_1, COLOR_FG_0);
 };
 
 void Game::Render() {
@@ -62,11 +65,15 @@ void Game::Render() {
 
       cchar_t cell;
       if (top.isAlive && bottom.isAlive) {
-        setcchar(&cell, CELL_TOP_BOTTOM, 0, 1, nullptr);
+        const wchar_t* c = top.age == bottom.age ? CELL_TOP_BOTTOM : CELL_TOP;
+        const short color = top.age >= 1 ? 2 : 1;
+        setcchar(&cell, c, 0, color, nullptr);
       } else if (top.isAlive) {
-        setcchar(&cell, CELL_TOP, 0, 1, nullptr);
+        short color = top.age >= 1 ? 2 : 1;
+        setcchar(&cell, CELL_TOP, 0, color, nullptr);
       } else if (bottom.isAlive) {
-        setcchar(&cell, CELL_BOTTOM, 0, 1, nullptr);
+        short color = bottom.age >= 1 ? 2 : 1;
+        setcchar(&cell, CELL_BOTTOM, 0, color, nullptr);
       } else {
         setcchar(&cell, NO_CELL, 0, 1, nullptr);
       }
@@ -86,10 +93,10 @@ Cell Game::nextCellState(int x, int y) {
   const Cell curr = grid_[y][x];
   if (curr.isAlive) {
     const bool alive = neighbors == 2 || neighbors == 3;
-    return (Cell){.isAlive = alive, .age = curr.age + 1};
+    return (Cell){.isAlive = alive, .age = alive ? curr.age + 1 : -1};
   } else {
     const bool alive = neighbors == 3;
-    return (Cell){.isAlive = alive};
+    return (Cell){.isAlive = alive, .age = alive ? 0 : -1};
   }
 }
 
@@ -106,6 +113,16 @@ int Game::countNeighbors(int x, int y) {
 
 bool Game::inBounds(int x, int y) {
   return x > 0 && y > 0 && x < width_ && y < height_;
+}
+
+void Game::initHexColor(short colorId, const std::string& hex) {
+  if (hex.size() != 7 || hex[0] != '#')
+    throw std::invalid_argument("Invalid hex color format");
+
+  short r = colorFromHex(hex.substr(1, 2));
+  short g = colorFromHex(hex.substr(3, 2));
+  short b = colorFromHex(hex.substr(5, 2));
+  init_color(colorId, r, g, b);
 }
 
 short Game::colorFromHex(const std::string& hex) {

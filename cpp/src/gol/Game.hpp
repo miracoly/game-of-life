@@ -8,9 +8,9 @@
 
 namespace gol {
 
-#define COLOR_FG_0 COLOR_MAGENTA
-#define COLOR_FG_1 COLOR_BLUE
-#define COLOR_BG COLOR_WHITE
+#define COLOR_BG 10
+#define COLOR_FG_0 11
+#define COLOR_FG_1 12
 
 struct Cell {
   bool isAlive;
@@ -34,7 +34,8 @@ class Game {
   Cell nextCellState(int x, int y);
   int countNeighbors(int x, int y);
   bool inBounds(int x, int y);
-  short colorFromHex(const std::string& hex);
+  static void initHexColor(short colorId, const std::string& hex);
+  static short colorFromHex(const std::string& hex);
 
   inline static constexpr wchar_t CELL_TOP[] = L"\u2580";
   inline static constexpr wchar_t CELL_BOTTOM[] = L"\u2584";
